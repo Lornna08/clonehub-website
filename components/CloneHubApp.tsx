@@ -11,7 +11,7 @@ import { SITE, BRAND, waLink, emailLink } from "@/data/site";
 import { CATEGORIES, SERVICES, templateFor, catName } from "@/data/services";
 import { CLIENTS, WORK } from "@/data/showcase";
 import { CATALOGUE } from "@/data/catalogue";
-import { LogoMark, Wordmark } from "@/components/Logo";
+import { Wordmark } from "@/components/Logo";
 
 export default function CloneHubApp() {
   const [route, setRoute] = useState({ page: "home" });
@@ -74,7 +74,7 @@ function Header({ go, route, openQuote, menuOpen, setMenuOpen, openSearch }) {
       <div className="wrap" style={{ display: "flex", alignItems: "center",
         justifyContent: "space-between", height: 74 }}>
         <button onClick={() => go("home")} style={btnReset}>
-          <Wordmark size={34} />
+          <Wordmark size={30} />
         </button>
 
         <nav className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -274,7 +274,7 @@ function Hero({ go, openQuote }) {
             <img src={"/hero.jpg"} alt="Clone Hub branded stationery — bag, notebook, business cards, mug and pen"
               className="hero-photo" loading="eager" />
             <div className="hero-photo-badge">
-              <LogoMark size={28} color={BRAND.navy} />
+              <img src="/mark.png" alt="" style={{ width: 30, height: "auto" }} />
               <div>
                 <div style={{ fontWeight: 800, fontSize: 13, color: BRAND.ink }}>Full brand kits</div>
                 <div style={{ fontSize: 11.5, color: BRAND.slate }}>designed, printed & delivered</div>
@@ -373,7 +373,7 @@ function WorkCard({ w, featured }) {
         {w.image
           ? <img src={w.image} alt={w.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           : <>
-              <div className="work-mark"><LogoMark size={54} color="rgba(255,255,255,.22)" /></div>
+              <div className="work-mark"><img src="/mark-white.png" alt="" style={{ width: 54, opacity: .22 }} /></div>
               <span className="work-demo">Demo</span>
             </>}
       </div>
@@ -695,7 +695,7 @@ function ServiceDetail({ service, go, openQuote }) {
             </div>
             <div className="detail-visual" style={{
               background: `linear-gradient(135deg, ${BRAND.blue}, ${BRAND.sky})` }}>
-              <LogoMark size={80} color="rgba(255,255,255,.25)" />
+              <img src="/mark-white.png" alt="" style={{ width: 80, opacity: .25 }} />
             </div>
           </div>
         </div>
@@ -784,7 +784,7 @@ function PortfolioPage({ openQuote }) {
                 {w.image
                   ? <img src={w.image} alt={w.title} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                   : <>
-                      <LogoMark size={48} color="rgba(255,255,255,.22)" />
+                      <img src="/mark-white.png" alt="" style={{ width: 48, opacity: .22 }} />
                       <span className="work-demo">Demo</span>
                     </>}
                 <div className="masonry-overlay">
@@ -823,7 +823,7 @@ function PortfolioPage({ openQuote }) {
               borderRadius: 18, aspectRatio: "4/3", display: "grid", placeItems: "center", overflow: "hidden" }}>
               {light.image
                 ? <img src={light.image} alt={light.title} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-                : <LogoMark size={90} color="rgba(255,255,255,.25)" />}
+                : <img src="/mark-white.png" alt="" style={{ width: 90, opacity: .25 }} />}
             </div>
             <div style={{ color: "#fff", marginTop: 18, textAlign: "center" }}>
               <span className="work-cat">{light.cat}</span>

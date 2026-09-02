@@ -37,11 +37,11 @@ export interface Work {
 }
 
 export const WORK: Work[] = [
-  { title: "Samsung Activation Stage", cat: "Events", image: "/work/samsung-activation.jpg", tone: [BRAND.sky, BRAND.blue], featured: true },
+  { title: "Safaricom Activation Stage", cat: "Events", image: "/work/samsung-activation.jpg", tone: [BRAND.sky, BRAND.blue], featured: true },
   { title: "Samsung Galaxy Poster", cat: "Large Format", image: "/work/galaxy-poster.jpg", tone: [BRAND.ink, BRAND.sky] },
   { title: "Vehicle Branding", cat: "Large Format", image: "/work/vehicle-wrap.jpg", tone: [BRAND.ink, BRAND.blue] },
   { title: "Event Backdrop", cat: "Events", image: "/work/mothers-day-backdrop.jpg", tone: [BRAND.navy, BRAND.blue] },
-  { title: "Brand Activation Booth", cat: "Events", image: "/work/samsung-hook-stand.jpg", tone: [BRAND.blue, BRAND.sky] },
+  { title: "Safaricom Hook Activation", cat: "Events", image: "/work/samsung-hook-stand.jpg", tone: [BRAND.blue, BRAND.sky] },
   { title: "Roll-Up Banners", cat: "Large Format", image: "/work/rollup-banners.jpg", tone: [BRAND.blue, BRAND.navy] },
   { title: "Pull-Up Banner", cat: "Large Format", image: "/work/pullup-banner.jpg", tone: [BRAND.navy, BRAND.ink] },
   { title: "Galaxy AI Standees", cat: "Signage", image: "/work/galaxy-ai-standee.jpg", tone: [BRAND.ink, BRAND.blue] },

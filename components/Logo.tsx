@@ -18,7 +18,7 @@ export function LogoMark({ size = 40, color = BRAND.navy }: { size?: number; col
 
 /* Real Clone Hub logo image. `light` = on a dark background → sits on a white chip. */
 export function Wordmark({ light = false, size = 40 }: { light?: boolean; size?: number }) {
-  const h = size * 1.15;
+  const h = size;
   const img = (
     <img
       src="/logo.png"
@@ -28,7 +28,7 @@ export function Wordmark({ light = false, size = 40 }: { light?: boolean; size?:
   );
   if (light) {
     return (
-      <span style={{ display: "inline-flex", background: "#fff", padding: "8px 12px", borderRadius: 12 }}>
+      <span style={{ display: "inline-flex", background: "#fff", padding: "7px 11px", borderRadius: 11 }}>
         {img}
       </span>
     );
