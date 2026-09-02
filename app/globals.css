@@ -1,0 +1,13 @@
+:root {
+  --body: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --display: "Bricolage Grotesque", var(--body);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--body);
+  color: #0B1220;
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
