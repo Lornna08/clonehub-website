@@ -9,8 +9,9 @@ export const SITE = {
   tagline: "Design, Printing & Branding",
   contactPerson: "Erick Mathenge",
   role: "Graphic Designer",
-  address: "Pembe Plaza, Enterprise Rd, Nairobi, Kenya",
+  address: "Khoja Roundabout, Nairobi, Kenya",
   phone: "+254 717 892 694",
+  phone2: "+254 748 846 781",
   whatsapp: "254717892694", // digits only, no + or spaces
   email: "ericmathenge254@gmail.com",
   // Used for SEO / links. Change to your real domain after you buy one.

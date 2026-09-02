@@ -6,9 +6,8 @@
    e.g. { name: "Safaricom", logo: "/clients/safaricom.png" }.
    If `logo` is omitted, a styled text chip is shown.
 
-   WORK: To use a real project photo, drop it in /public/work/
-   and set `image` to its path, e.g. image: "/work/backdrop.jpg".
-   If `image` is omitted, a branded placeholder tile is shown.
+   WORK: `image` points to a file in /public/work/. To add a new
+   project, drop a photo in /public/work/ and add a line here.
    ============================================================ */
 
 import { BRAND } from "./site";
@@ -19,6 +18,7 @@ export interface Client {
 }
 
 export const CLIENTS: Client[] = [
+  { name: "Samsung" },
   { name: "EABL" },
   { name: "Safaricom" },
   { name: "KCB Bank" },
@@ -33,15 +33,23 @@ export interface Work {
   cat: string;
   image?: string; // e.g. "/work/vehicle-wrap.jpg"
   tone: [string, string]; // fallback gradient if no image
+  featured?: boolean;
 }
 
 export const WORK: Work[] = [
-  { title: "Corporate Event Backdrop", cat: "Events", tone: [BRAND.navy, BRAND.blue] },
-  { title: "Retail Vehicle Wrap", cat: "Large Format", tone: [BRAND.ink, BRAND.sky] },
-  { title: "Premium Business Cards", cat: "Printing", tone: [BRAND.blue, BRAND.sky] },
-  { title: "Reception Wall Branding", cat: "Corporate", tone: [BRAND.navy, BRAND.ink] },
-  { title: "Exhibition Stand", cat: "Events", tone: [BRAND.sky, BRAND.blue] },
-  { title: "Product Packaging", cat: "Packaging", tone: [BRAND.blue, BRAND.navy] },
-  { title: "Illuminated Shop Sign", cat: "Signage", tone: [BRAND.ink, BRAND.blue] },
-  { title: "Branded Apparel Run", cat: "Branding", tone: [BRAND.navy, BRAND.sky] },
+  { title: "Samsung Activation Stage", cat: "Events", image: "/work/samsung-activation.jpg", tone: [BRAND.sky, BRAND.blue], featured: true },
+  { title: "Samsung Galaxy Poster", cat: "Large Format", image: "/work/galaxy-poster.jpg", tone: [BRAND.ink, BRAND.sky] },
+  { title: "Vehicle Branding", cat: "Large Format", image: "/work/vehicle-wrap.jpg", tone: [BRAND.ink, BRAND.blue] },
+  { title: "Event Backdrop", cat: "Events", image: "/work/mothers-day-backdrop.jpg", tone: [BRAND.navy, BRAND.blue] },
+  { title: "Brand Activation Booth", cat: "Events", image: "/work/samsung-hook-stand.jpg", tone: [BRAND.blue, BRAND.sky] },
+  { title: "Roll-Up Banners", cat: "Large Format", image: "/work/rollup-banners.jpg", tone: [BRAND.blue, BRAND.navy] },
+  { title: "Pull-Up Banner", cat: "Large Format", image: "/work/pullup-banner.jpg", tone: [BRAND.navy, BRAND.ink] },
+  { title: "Galaxy AI Standees", cat: "Signage", image: "/work/galaxy-ai-standee.jpg", tone: [BRAND.ink, BRAND.blue] },
+  { title: "Retail Standee", cat: "Signage", image: "/work/estore-standee.jpg", tone: [BRAND.navy, BRAND.sky] },
+  { title: "Event Wayfinding Signage", cat: "Signage", image: "/work/wayfinding-stakes.jpg", tone: [BRAND.blue, BRAND.sky] },
+  { title: "Event Registration Signage", cat: "Events", image: "/work/registration-signs.jpg", tone: [BRAND.navy, BRAND.blue] },
+  { title: "Branded Apparel", cat: "Branding", image: "/work/apparel-tshirts.jpg", tone: [BRAND.navy, BRAND.sky] },
+  { title: "Reflective Workwear", cat: "Branding", image: "/work/reflective-vests.jpg", tone: [BRAND.blue, BRAND.navy] },
+  { title: "Large Format Production", cat: "Large Format", image: "/work/large-format-print.jpg", tone: [BRAND.ink, BRAND.sky] },
+  { title: "Event Print Collateral", cat: "Printing", image: "/work/event-cards.jpg", tone: [BRAND.blue, BRAND.sky] },
 ];

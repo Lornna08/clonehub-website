@@ -310,7 +310,7 @@ function TrustStrip() {
 function ServiceCategories({ go }) {
   return (
     <Section eyebrow="What we do" title="Whatever you need — we handle it"
-      sub="Nine production categories under one roof. Explore the full catalog or jump straight to a service.">
+      sub="Nine production categories under one roof. Tap any to explore, or see the full catalog.">
       <div className="cat-grid">
         {CATEGORIES.map((c) => {
           const Icon = c.icon;
@@ -318,19 +318,22 @@ function ServiceCategories({ go }) {
           return (
             <button key={c.id} onClick={() => go("services", { filter: c.id })}
               className="cat-card" style={btnReset}>
-              <div className="cat-icon"><Icon size={26} color={BRAND.blue} /></div>
-              <div style={{ fontWeight: 800, fontSize: 19, marginTop: 14 }}>{c.name}</div>
-              <div style={{ fontSize: 13.5, color: BRAND.slate, marginTop: 4 }}>{count} services</div>
-              <div className="cat-arrow"><ArrowRight size={18} /></div>
+              <div className="cat-icon"><Icon size={22} color={BRAND.blue} /></div>
+              <div className="cat-text">
+                <div className="cat-name">{c.name}</div>
+                <div className="cat-count">{count} services</div>
+              </div>
+              <ArrowRight size={16} className="cat-chevron" />
             </button>
           );
         })}
         <button onClick={() => go("services")} className="cat-card cat-cta" style={btnReset}>
-          <Sparkles size={26} color="#fff" />
-          <div style={{ fontWeight: 800, fontSize: 19, marginTop: 14, color: "#fff" }}>
-            Explore all {SERVICES.length}
+          <div className="cat-icon cta"><Sparkles size={22} color="#fff" /></div>
+          <div className="cat-text">
+            <div className="cat-name" style={{ color: "#fff" }}>All {SERVICES.length} services</div>
+            <div className="cat-count" style={{ color: "rgba(255,255,255,.75)" }}>Browse everything</div>
           </div>
-          <div style={{ fontSize: 13.5, color: "rgba(255,255,255,.75)", marginTop: 4 }}>services →</div>
+          <ArrowRight size={16} className="cat-chevron" style={{ color: "#fff" }} />
         </button>
       </div>
     </Section>
@@ -379,19 +382,24 @@ function WorkCard({ w, featured }) {
 }
 
 function Clients() {
+  // Duplicate the list so the marquee loops seamlessly.
+  const row = [...CLIENTS, ...CLIENTS];
   return (
-    <Section eyebrow="Trusted by brands that mean business" title="Brands we've worked with"
-      sub="From established corporations to growing businesses, Clone Hub delivers print, branding and production built to make brands stand out.">
-      <div className="client-grid">
-        {CLIENTS.map((c) => (
-          <div key={c.name} className="client-chip" title={c.name}>
-            {c.logo
-              ? <img src={c.logo} alt={c.name} style={{ maxWidth: "100%", maxHeight: 46, objectFit: "contain" }} />
-              : c.name}
-          </div>
-        ))}
+    <section className="wrap" style={{ padding: "72px 0" }}>
+      <SectionHead eyebrow="Trusted by brands that mean business" title="Brands we've worked with"
+        sub="From established corporations to growing businesses, Clone Hub delivers print, branding and production built to make brands stand out." />
+      <div className="client-marquee">
+        <div className="client-track">
+          {row.map((c, i) => (
+            <div key={i} className="client-badge" title={c.name}>
+              {c.logo
+                ? <img src={c.logo} alt={c.name} style={{ maxHeight: 40, maxWidth: 120, objectFit: "contain" }} />
+                : <span>{c.name}</span>}
+            </div>
+          ))}
+        </div>
       </div>
-    </Section>
+    </section>
   );
 }
 
@@ -841,6 +849,7 @@ function ContactPage({ openQuote }) {
         <div style={{ display: "grid", gap: 14 }}>
           <ContactRow icon={MapPin} label="Visit us" value={SITE.address} />
           <ContactRow icon={Phone} label="Call" value={SITE.phone} href={`tel:${SITE.phone.replace(/\s/g, "")}`} />
+          <ContactRow icon={Phone} label="Call (alt)" value={SITE.phone2} href={`tel:${SITE.phone2.replace(/\s/g, "")}`} />
           <ContactRow icon={MessageCircle} label="WhatsApp" value={SITE.phone} href={waLink()} accent />
           <ContactRow icon={Mail} label="Email" value={SITE.email} href={`mailto:${SITE.email}`} />
           <div style={{ padding: 18, borderRadius: 14, background: BRAND.mist, fontSize: 14,
@@ -1522,6 +1531,7 @@ function Footer({ go, openQuote }) {
           <div style={{ display: "grid", gap: 12, marginTop: 4 }}>
             <FootRow icon={MapPin}>{SITE.address}</FootRow>
             <FootRow icon={Phone} href={`tel:${SITE.phone.replace(/\s/g, "")}`}>{SITE.phone}</FootRow>
+            <FootRow icon={Phone} href={`tel:${SITE.phone2.replace(/\s/g, "")}`}>{SITE.phone2}</FootRow>
             <FootRow icon={Mail} href={`mailto:${SITE.email}`}>{SITE.email}</FootRow>
           </div>
         </div>
@@ -1681,18 +1691,24 @@ function GlobalStyle() {
       .trust-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
       @media (max-width: 780px) { .trust-grid { grid-template-columns: 1fr 1fr; gap: 18px; } }
 
-      .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
       @media (max-width: 820px) { .cat-grid { grid-template-columns: 1fr 1fr; } }
-      @media (max-width: 520px) { .cat-grid { grid-template-columns: 1fr; } }
-      .cat-card { position: relative; padding: 26px; border-radius: 18px; border: 1px solid ${BRAND.line};
-        background: #fff; text-align: left; transition: .2s; overflow: hidden; }
-      .cat-card:hover { border-color: ${BRAND.blue}; box-shadow: 0 16px 40px rgba(15,23,42,.09); transform: translateY(-3px); }
-      .cat-icon { width: 54px; height: 54px; border-radius: 14px; background: ${BRAND.mist};
-        display: grid; place-items: center; }
-      .cat-arrow { position: absolute; top: 26px; right: 26px; color: ${BRAND.line}; transition: .2s; }
-      .cat-card:hover .cat-arrow { color: ${BRAND.blue}; transform: translate(3px,-3px); }
+      @media (max-width: 440px) { .cat-grid { grid-template-columns: 1fr; } }
+      .cat-card { position: relative; display: flex; align-items: center; gap: 14px;
+        padding: 16px 18px; border-radius: 16px; border: 1px solid ${BRAND.line};
+        background: #fff; text-align: left; transition: .2s; }
+      .cat-card:hover { border-color: ${BRAND.blue}; box-shadow: 0 12px 30px rgba(15,23,42,.08); transform: translateY(-2px); }
+      .cat-icon { width: 46px; height: 46px; border-radius: 12px; background: ${BRAND.mist};
+        display: grid; place-items: center; flex-shrink: 0; transition: .2s; }
+      .cat-card:hover .cat-icon { background: rgba(46,107,230,.1); }
+      .cat-text { flex: 1; min-width: 0; }
+      .cat-name { font-weight: 700; font-size: 16px; letter-spacing: -.2px; }
+      .cat-count { font-size: 12.5px; color: ${BRAND.slate}; margin-top: 2px; }
+      .cat-chevron { color: ${BRAND.line}; flex-shrink: 0; transition: .2s; }
+      .cat-card:hover .cat-chevron { color: ${BRAND.blue}; transform: translateX(3px); }
       .cat-cta { background: linear-gradient(135deg, ${BRAND.navy}, ${BRAND.blue}); border: none; }
-      .cat-cta .cat-icon { background: rgba(255,255,255,.15); }
+      .cat-cta .cat-icon.cta { background: rgba(255,255,255,.16); }
+      .cat-cta:hover .cat-icon.cta { background: rgba(255,255,255,.24); }
 
       .work-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; gap: 16px; }
       .work-card { border-radius: 16px; overflow: hidden; background: #fff; border: 1px solid ${BRAND.line}; }
@@ -1709,12 +1725,16 @@ function GlobalStyle() {
       .work-cat { font-size: 11.5px; font-weight: 700; color: ${BRAND.blue}; background: rgba(46,107,230,.1);
         padding: 4px 10px; border-radius: 6px; letter-spacing: .5px; }
 
-      .client-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-      @media (max-width: 700px) { .client-grid { grid-template-columns: 1fr 1fr; } }
-      .client-chip { display: grid; place-items: center; padding: 26px 16px; border-radius: 14px;
-        border: 1px solid ${BRAND.line}; font-weight: 800; font-size: 20px; color: ${BRAND.slate};
-        letter-spacing: -.5px; transition: .2s; filter: grayscale(1); opacity: .7; }
-      .client-chip:hover { filter: none; opacity: 1; color: ${BRAND.navy}; border-color: ${BRAND.blue}; }
+      .client-marquee { position: relative; overflow: hidden; margin-top: 8px;
+        -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+        mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+      .client-track { display: flex; gap: 14px; width: max-content; animation: marquee 28s linear infinite; }
+      .client-marquee:hover .client-track { animation-play-state: paused; }
+      @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+      .client-badge { display: grid; place-items: center; min-width: 150px; height: 84px;
+        padding: 0 22px; border-radius: 14px; border: 1px solid ${BRAND.line}; background: #fff;
+        font-weight: 800; font-size: 19px; color: ${BRAND.navy}; letter-spacing: -.4px; flex-shrink: 0; }
+      @media (prefers-reduced-motion: reduce) { .client-track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; } }
 
       .process-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
       @media (max-width: 900px) { .process-grid { grid-template-columns: repeat(3, 1fr); } }

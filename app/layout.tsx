@@ -32,13 +32,13 @@ export const metadata: Metadata = {
     title: `${SITE.name} — Design, Printing & Branding in Nairobi`,
     description:
       "Design, print, branding and installation for Nairobi businesses, events and brands. Request a quote in a couple of taps.",
-    images: [{ url: "/hero.jpg", width: 1100, height: 733, alt: "Clone Hub branded stationery" }],
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Clone Hub — Design, Printing and Branding" }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE.name} — Design, Printing & Branding`,
     description: "Nairobi printing, branding and installation. Quote on WhatsApp.",
-    images: ["/hero.jpg"],
+    images: ["/og.jpg"],
   },
   alternates: { canonical: SITE.url },
   robots: { index: true, follow: true },

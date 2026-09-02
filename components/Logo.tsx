@@ -1,5 +1,6 @@
 import { BRAND } from "@/data/site";
 
+/* SVG mark — used for faint watermarks on placeholder tiles only. */
 export function LogoMark({ size = 40, color = BRAND.navy }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" fill="none" aria-hidden="true">
@@ -15,19 +16,22 @@ export function LogoMark({ size = 40, color = BRAND.navy }: { size?: number; col
   );
 }
 
+/* Real Clone Hub logo image. `light` = on a dark background → sits on a white chip. */
 export function Wordmark({ light = false, size = 40 }: { light?: boolean; size?: number }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-      <LogoMark size={size} color={light ? "#fff" : BRAND.navy} />
-      <div style={{ lineHeight: 1 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
-          <span style={{ fontFamily: "var(--display)", fontWeight: 800, fontSize: size * 0.5, color: BRAND.sky, letterSpacing: "-0.5px" }}>CLONE</span>
-          <span style={{ fontFamily: "var(--display)", fontWeight: 800, fontSize: size * 0.5, color: light ? "#fff" : BRAND.navy, letterSpacing: "-0.5px" }}>HUB</span>
-        </div>
-        <div style={{ fontSize: size * 0.16, letterSpacing: "2px", fontWeight: 600, color: light ? "rgba(255,255,255,.65)" : BRAND.sky, marginTop: 2 }}>
-          DESIGN · PRINTING · BRANDING
-        </div>
-      </div>
-    </div>
+  const h = size * 1.15;
+  const img = (
+    <img
+      src="/logo.png"
+      alt="Clone Hub — Design, Printing and Branding"
+      style={{ height: h, width: "auto", display: "block" }}
+    />
   );
+  if (light) {
+    return (
+      <span style={{ display: "inline-flex", background: "#fff", padding: "8px 12px", borderRadius: 12 }}>
+        {img}
+      </span>
+    );
+  }
+  return img;
 }
