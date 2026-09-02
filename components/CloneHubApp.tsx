@@ -10,6 +10,7 @@ import {
 import { SITE, BRAND, waLink, emailLink } from "@/data/site";
 import { CATEGORIES, SERVICES, templateFor, catName } from "@/data/services";
 import { CLIENTS, WORK } from "@/data/showcase";
+import { CATALOGUE } from "@/data/catalogue";
 import { LogoMark, Wordmark } from "@/components/Logo";
 
 export default function CloneHubApp() {
@@ -38,6 +39,7 @@ export default function CloneHubApp() {
       {route.page === "services" && <ServicesPage go={go} openQuote={openQuote} filter={route.filter} />}
       {route.page === "service" && <ServiceDetail service={route.service} go={go} openQuote={openQuote} />}
       {route.page === "portfolio" && <PortfolioPage openQuote={openQuote} />}
+      {route.page === "catalogue" && <CataloguePage openQuote={openQuote} go={go} />}
       {route.page === "contact" && <ContactPage openQuote={openQuote} />}
 
       <Footer go={go} openQuote={openQuote} />
@@ -84,6 +86,7 @@ function Header({ go, route, openQuote, menuOpen, setMenuOpen, openSearch }) {
             {mega && <MegaMenu go={go} close={() => setMega(false)} />}
           </div>
           <NavBtn onClick={() => go("portfolio")} active={route.page === "portfolio"}>Work</NavBtn>
+          <NavBtn onClick={() => go("catalogue")} active={route.page === "catalogue"}>Catalogue</NavBtn>
           <NavBtn onClick={() => go("contact")} active={route.page === "contact"}>Contact</NavBtn>
           <button onClick={openSearch} aria-label="Search services" style={{
             ...btnReset, padding: 9, borderRadius: 10, marginLeft: 4,
@@ -182,6 +185,7 @@ function MobileMenu({ go, openQuote, openSearch }) {
         </div>
       )}
       <button onClick={() => go("portfolio")} style={mobileRow}>Work</button>
+      <button onClick={() => go("catalogue")} style={mobileRow}>Catalogue</button>
       <button onClick={() => go("contact")} style={mobileRow}>Contact</button>
       <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
         <a href={waLink()} target="_blank" rel="noreferrer"
@@ -840,6 +844,80 @@ function PortfolioPage({ openQuote }) {
 /* ============================================================
    CONTACT PAGE
    ============================================================ */
+/* ============================================================
+   CATALOGUE PAGE
+   ============================================================ */
+function CataloguePage({ openQuote, go }) {
+  return (
+    <main>
+      <PageHeader title="Our Catalogue" crumb="Everything Clone Hub produces"
+        sub="A complete look at our print, branding and production capabilities — organized by service. See something you need? Request a quote in a couple of taps." />
+
+      {/* quick jump nav */}
+      <div className="wrap" style={{ paddingTop: 8 }}>
+        <div className="cat-jump">
+          {CATALOGUE.map((s) => (
+            <a key={s.id} href={`#${s.id}`} className="cat-jump-chip">{s.title}</a>
+          ))}
+        </div>
+      </div>
+
+      <div className="wrap" style={{ padding: "36px 0 90px" }}>
+        {CATALOGUE.map((s, i) => (
+          <section key={s.id} id={s.id} className="cat-section"
+            style={{ direction: i % 2 ? "rtl" : "ltr" }}>
+            <div className="cat-sec-media" style={{ direction: "ltr" }}>
+              <img src={s.image} alt={s.imageAlt} loading="lazy" />
+              <span className="cat-sec-index">{String(i + 1).padStart(2, "0")}</span>
+            </div>
+            <div className="cat-sec-body" style={{ direction: "ltr" }}>
+              <div className="cat-sec-eyebrow">{`Section ${String(i + 1).padStart(2, "0")}`}</div>
+              <h2 className="cat-sec-title">{s.title}</h2>
+              <p className="cat-sec-intro">{s.intro}</p>
+              <div className="cat-sec-items">
+                {s.items.map((it) => (
+                  <span key={it} className="cat-sec-item"><Check size={13} color={BRAND.blue} /> {it}</span>
+                ))}
+              </div>
+              <div style={{ display: "flex", gap: 10, marginTop: 24, flexWrap: "wrap" }}>
+                <button onClick={() => openQuote()} style={{ ...primaryBtn, padding: "12px 20px" }}>
+                  Request a Quote <ArrowRight size={16} />
+                </button>
+                <a href={waLink(`Hello Clone Hub, I'd like a quote for ${s.title}.`)} target="_blank" rel="noreferrer"
+                  style={{ ...ghostBtn, textDecoration: "none", padding: "11px 18px" }}>
+                  <MessageCircle size={15} /> WhatsApp
+                </a>
+              </div>
+            </div>
+          </section>
+        ))}
+
+        {/* closing CTA */}
+        <div className="cta-band" style={{ marginTop: 20 }}>
+          <div aria-hidden className="cta-glow" />
+          <h3 style={{ fontFamily: "var(--display)", fontWeight: 800,
+            fontSize: "clamp(26px,4.5vw,44px)", letterSpacing: "-1px", lineHeight: 1.05, margin: 0,
+            color: "#fff", position: "relative" }}>
+            Don't see exactly what you need?<br />
+            <span style={{ color: BRAND.sky }}>Tell us — we'll handle it.</span>
+          </h3>
+          <div style={{ display: "flex", gap: 12, marginTop: 26, flexWrap: "wrap",
+            justifyContent: "center", position: "relative" }}>
+            <button onClick={() => openQuote({ mode: "consult" })} style={{ ...primaryBtn, padding: "15px 26px", fontSize: 16 }}>
+              Get a recommendation <ArrowRight size={18} />
+            </button>
+            <a href={waLink()} target="_blank" rel="noreferrer"
+              style={{ ...lightBtn, textDecoration: "none", padding: "15px 24px", fontSize: 16 }}>
+              <MessageCircle size={18} /> Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+
 function ContactPage({ openQuote }) {
   return (
     <main>
@@ -1523,6 +1601,7 @@ function Footer({ go, openQuote }) {
           <FooterHead>Company</FooterHead>
           <FooterLink onClick={() => go("services")}>All services</FooterLink>
           <FooterLink onClick={() => go("portfolio")}>Selected work</FooterLink>
+          <FooterLink onClick={() => go("catalogue")}>Catalogue</FooterLink>
           <FooterLink onClick={() => go("contact")}>Contact</FooterLink>
           <FooterLink onClick={() => openQuote()}>Get a quote</FooterLink>
         </div>
@@ -1802,7 +1881,33 @@ function GlobalStyle() {
         justify-content: flex-end; padding: 18px; opacity: 0; transition: .25s;
         background: linear-gradient(transparent, rgba(11,18,32,.7)); }
       .masonry-item:hover .masonry-overlay { opacity: 1; }
-      .port-cta { margin-top: 50px; padding: 40px; border-radius: 24px; background: ${BRAND.mist};
+      /* catalogue page */
+      .cat-jump { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0 4px; }
+      .cat-jump::-webkit-scrollbar { height: 0; }
+      .cat-jump-chip { flex-shrink: 0; padding: 8px 14px; border-radius: 999px; font-size: 13px;
+        font-weight: 600; color: ${BRAND.slate}; background: #fff; border: 1px solid ${BRAND.line};
+        text-decoration: none; white-space: nowrap; transition: .15s; }
+      .cat-jump-chip:hover { border-color: ${BRAND.blue}; color: ${BRAND.navy}; }
+      .cat-section { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center;
+        padding: 44px 0; border-bottom: 1px solid ${BRAND.line}; scroll-margin-top: 90px; }
+      @media (max-width: 780px) { .cat-section { grid-template-columns: 1fr; gap: 24px; direction: ltr !important; } }
+      .cat-sec-media { position: relative; border-radius: 20px; overflow: hidden; aspect-ratio: 4/3;
+        background: ${BRAND.ink}; box-shadow: 0 20px 50px rgba(15,23,42,.12); }
+      .cat-sec-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .cat-sec-index { position: absolute; top: 14px; left: 16px; font-family: var(--display);
+        font-weight: 800; font-size: 40px; color: rgba(255,255,255,.9); line-height: 1;
+        text-shadow: 0 2px 12px rgba(0,0,0,.4); }
+      .cat-sec-eyebrow { color: ${BRAND.blue}; font-weight: 700; font-size: 12.5px; letter-spacing: 1.5px;
+        text-transform: uppercase; margin-bottom: 10px; }
+      .cat-sec-title { font-family: var(--display); font-weight: 800; font-size: clamp(26px,3.6vw,38px);
+        letter-spacing: -1px; line-height: 1.05; margin: 0 0 14px; }
+      .cat-sec-intro { font-size: 16px; color: ${BRAND.slate}; line-height: 1.55; margin: 0 0 20px; }
+      .cat-sec-items { display: flex; flex-wrap: wrap; gap: 8px; }
+      .cat-sec-item { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px;
+        font-weight: 600; color: ${BRAND.navy}; background: ${BRAND.mist}; padding: 7px 12px;
+        border-radius: 999px; border: 1px solid ${BRAND.line}; }
+
+
         display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
       .lightbox { position: fixed; inset: 0; background: rgba(11,18,32,.9); z-index: 100;
         display: grid; place-items: center; padding: 24px; }
