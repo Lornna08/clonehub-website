@@ -12,20 +12,79 @@ import { CATEGORIES, SERVICES, templateFor, catName } from "@/data/services";
 import { CLIENTS, WORK } from "@/data/showcase";
 import { CATALOGUE } from "@/data/catalogue";
 import { Wordmark } from "@/components/Logo";
+import { ContentProvider, useContent } from "@/lib/contentStore";
 
-export default function CloneHubApp() {
+function slugify(s: string) {
+  return s.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+// Wrapper: receives content from the server page and provides it to the app.
+export default function CloneHubApp({ content }: { content?: any }) {
+  return (
+    <ContentProvider content={content}>
+      <CloneHubInner />
+    </ContentProvider>
+  );
+}
+
+function CloneHubInner() {
+  const { services: SERVICES } = useContent();
   const [route, setRoute] = useState({ page: "home" });
   const [menuOpen, setMenuOpen] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
   const [quoteSeed, setQuoteSeed] = useState(null);
   const [searchOpen, setSearchOpen] = useState(false);
 
+  // Map between a route object and a URL path.
+  const routeToPath = (r) => {
+    switch (r.page) {
+      case "home": return "/";
+      case "services": return r.filter ? `/services/${r.filter}` : "/services";
+      case "service": return `/services/item/${slugify(r.service?.name || "")}`;
+      case "portfolio": return "/work";
+      case "catalogue": return "/catalogue";
+      case "contact": return "/contact";
+      default: return "/";
+    }
+  };
+  const pathToRoute = (path) => {
+    const p = path.replace(/\/+$/, "") || "/";
+    if (p === "/" || p === "") return { page: "home" };
+    if (p === "/services") return { page: "services" };
+    if (p.startsWith("/services/item/")) {
+      const slug = p.replace("/services/item/", "");
+      const svc = SERVICES.find((s) => slugify(s.name) === slug);
+      return svc ? { page: "service", service: svc } : { page: "services" };
+    }
+    if (p.startsWith("/services/")) return { page: "services", filter: p.replace("/services/", "") };
+    if (p === "/work") return { page: "portfolio" };
+    if (p === "/catalogue") return { page: "catalogue" };
+    if (p === "/contact") return { page: "contact" };
+    return { page: "home" };
+  };
+
+  // On first load, adopt the URL. On back/forward, update state.
+  useEffect(() => {
+    setRoute(pathToRoute(window.location.pathname));
+    const onPop = () => setRoute(pathToRoute(window.location.pathname));
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
   useEffect(() => {
     if (route) window.scrollTo({ top: 0, behavior: "auto" });
   }, [route]);
 
   const openQuote = (seed = null) => { setQuoteSeed(seed); setQuoteOpen(true); };
-  const go = (page, extra = {}) => { setRoute({ page, ...extra }); setMenuOpen(false); };
+  const go = (page, extra = {}) => {
+    const r = { page, ...extra };
+    setRoute(r);
+    setMenuOpen(false);
+    const path = routeToPath(r);
+    if (typeof window !== "undefined" && window.location.pathname !== path) {
+      window.history.pushState({}, "", path);
+    }
+  };
 
   return (
     <div style={{ background: "#fff", color: BRAND.ink, minHeight: "100vh",
@@ -71,8 +130,8 @@ function Header({ go, route, openQuote, menuOpen, setMenuOpen, openSearch }) {
       borderBottom: `1px solid ${scrolled ? BRAND.line : "transparent"}`,
       transition: "all .3s",
     }}>
-      <div className="wrap" style={{ display: "flex", alignItems: "center",
-        justifyContent: "space-between", height: 74 }}>
+      <div className="wrap header-bar" style={{ display: "flex", alignItems: "center",
+        justifyContent: "space-between" }}>
         <button onClick={() => go("home")} style={btnReset}>
           <Wordmark size={30} />
         </button>
@@ -219,6 +278,12 @@ function Home({ go, openQuote }) {
 }
 
 function Hero({ go, openQuote }) {
+  const { site: SITE } = useContent();
+  const headline = SITE.heroHeadline || "Print. Brand.";
+  const accent = SITE.heroHeadlineAccent || "Create.";
+  const subtext = SITE.heroSubtext ||
+    "From business cards and brochures to billboards, event branding, signage, packaging and complete installations — Clone Hub brings ideas to life.";
+  const heroImg = SITE.heroImageUrl || "/hero.jpg";
   return (
     <section style={{ position: "relative", overflow: "hidden",
       background: `linear-gradient(160deg, ${BRAND.ink} 0%, #131f52 55%, ${BRAND.navy} 100%)`,
@@ -240,13 +305,12 @@ function Hero({ go, openQuote }) {
           <h1 className="reveal d1" style={{ fontFamily: "var(--display)",
             fontWeight: 800, fontSize: "clamp(42px, 7vw, 84px)", lineHeight: .96,
             letterSpacing: "-2px", margin: 0 }}>
-            Print. Brand.<br />
-            <span style={{ color: BRAND.sky }}>Create.</span>
+            {headline}<br />
+            <span style={{ color: BRAND.sky }}>{accent}</span>
           </h1>
           <p className="reveal d2" style={{ fontSize: "clamp(16px,2.2vw,20px)", lineHeight: 1.55,
             color: "rgba(255,255,255,.78)", maxWidth: 540, margin: "22px 0 34px" }}>
-            From business cards and brochures to billboards, event branding, signage,
-            packaging and complete installations — Clone Hub brings ideas to life.
+            {subtext}
           </p>
           <div className="reveal d3" style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <button onClick={() => openQuote()} style={{ ...primaryBtn, padding: "15px 26px", fontSize: 16 }}>
@@ -271,7 +335,7 @@ function Hero({ go, openQuote }) {
         {/* Hero visual — real Clone Hub branded stationery */}
         <div className="hero-visual reveal d2">
           <div className="hero-photo-wrap">
-            <img src={"/hero.jpg"} alt="Clone Hub branded stationery — bag, notebook, business cards, mug and pen"
+            <img src={heroImg} alt="Clone Hub branded stationery — bag, notebook, business cards, mug and pen"
               className="hero-photo" loading="eager" />
             <div className="hero-photo-badge">
               <img src="/mark.png" alt="" style={{ width: 30, height: "auto" }} />
@@ -312,6 +376,7 @@ function TrustStrip() {
 }
 
 function ServiceCategories({ go }) {
+  const { services: SERVICES } = useContent();
   return (
     <Section eyebrow="What we do" title="Whatever you need — we handle it"
       sub="Nine production categories under one roof. Tap any to explore, or see the full catalog.">
@@ -345,6 +410,7 @@ function ServiceCategories({ go }) {
 }
 
 function SelectedWork({ go }) {
+  const { work: WORK } = useContent();
   return (
     <section style={{ background: BRAND.mist }}>
       <div className="wrap" style={{ padding: "84px 0" }}>
@@ -386,6 +452,7 @@ function WorkCard({ w, featured }) {
 }
 
 function Clients() {
+  const { clients: CLIENTS } = useContent();
   // Duplicate the list so the marquee loops seamlessly.
   const row = [...CLIENTS, ...CLIENTS];
   return (
@@ -560,6 +627,7 @@ function FAQ() {
    SERVICES PAGE
    ============================================================ */
 function ServicesPage({ go, openQuote, filter }) {
+  const { services: SERVICES } = useContent();
   const [active, setActive] = useState(filter || "all");
   const [q, setQ] = useState("");
   useEffect(() => { setActive(filter || "all"); }, [filter]);
@@ -646,6 +714,7 @@ function Chip({ children, active, onClick }) {
    SERVICE DETAIL
    ============================================================ */
 function ServiceDetail({ service, go, openQuote }) {
+  const { services: SERVICES } = useContent();
   if (!service) { go("services"); return null; }
   const cat = CATEGORIES.find((c) => c.id === service.category);
   const related = SERVICES.filter((s) => s.category === service.category && s.name !== service.name).slice(0, 4);
@@ -778,20 +847,24 @@ function PortfolioPage({ openQuote }) {
         <div className="masonry">
           {list.map((w, i) => (
             <button key={i} onClick={() => setLight(w)} className="masonry-item" style={btnReset}>
-              <div className="masonry-media" style={{
-                background: w.image ? "#0B1220" : `linear-gradient(135deg, ${w.tone[0]}, ${w.tone[1]})`,
-                paddingTop: i % 3 === 0 ? "125%" : i % 3 === 1 ? "80%" : "100%" }}>
-                {w.image
-                  ? <img src={w.image} alt={w.title} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
-                  : <>
-                      <img src="/mark-white.png" alt="" style={{ width: 48, opacity: .22 }} />
-                      <span className="work-demo">Demo</span>
-                    </>}
-                <div className="masonry-overlay">
-                  <span className="work-cat" style={{ background: "rgba(255,255,255,.9)" }}>{w.cat}</span>
-                  <div style={{ fontWeight: 700, color: "#fff", marginTop: 8 }}>{w.title}</div>
-                </div>
-              </div>
+              {w.image
+                ? <div className="masonry-media has-img">
+                    <img src={w.image} alt={w.title} loading="lazy" />
+                    <div className="masonry-overlay">
+                      <span className="work-cat" style={{ background: "rgba(255,255,255,.9)" }}>{w.cat}</span>
+                      <div style={{ fontWeight: 700, color: "#fff", marginTop: 8 }}>{w.title}</div>
+                    </div>
+                  </div>
+                : <div className="masonry-media" style={{
+                    background: `linear-gradient(135deg, ${w.tone[0]}, ${w.tone[1]})`,
+                    paddingTop: i % 3 === 0 ? "125%" : i % 3 === 1 ? "80%" : "100%" }}>
+                    <img src="/mark-white.png" alt="" style={{ width: 48, opacity: .22 }} />
+                    <span className="work-demo">Demo</span>
+                    <div className="masonry-overlay">
+                      <span className="work-cat" style={{ background: "rgba(255,255,255,.9)" }}>{w.cat}</span>
+                      <div style={{ fontWeight: 700, color: "#fff", marginTop: 8 }}>{w.title}</div>
+                    </div>
+                  </div>}
             </button>
           ))}
         </div>
@@ -848,6 +921,7 @@ function PortfolioPage({ openQuote }) {
    CATALOGUE PAGE
    ============================================================ */
 function CataloguePage({ openQuote, go }) {
+  const { catalogue: CATALOGUE } = useContent();
   return (
     <main>
       <PageHeader title="Our Catalogue" crumb="Everything Clone Hub produces"
@@ -919,6 +993,7 @@ function CataloguePage({ openQuote, go }) {
 
 
 function ContactPage({ openQuote }) {
+  const { site: SITE } = useContent();
   return (
     <main>
       <PageHeader title="Contact" crumb="Let's talk about your project"
@@ -1148,6 +1223,7 @@ function ConsultSteps({ step, data, set }) {
 }
 
 function StepService({ data, set }) {
+  const { services: SERVICES } = useContent();
   const [q, setQ] = useState("");
   const filtered = SERVICES.filter((s) => !q || s.name.toLowerCase().includes(q.toLowerCase())).slice(0, 40);
   return (
@@ -1485,6 +1561,7 @@ function buildMessage(data, consult) {
    SEARCH MODAL
    ============================================================ */
 function SearchModal({ close, go }) {
+  const { services: SERVICES } = useContent();
   const [q, setQ] = useState("");
   const ref = useRef();
   useEffect(() => { ref.current?.focus(); }, []);
@@ -1577,6 +1654,7 @@ function PageHeader({ title, crumb, sub }) {
 }
 
 function Footer({ go, openQuote }) {
+  const { site: SITE } = useContent();
   return (
     <footer style={{ background: BRAND.ink, color: "#fff" }}>
       <div className="wrap footer-grid" style={{ padding: "64px 0 40px" }}>
@@ -1742,6 +1820,8 @@ function GlobalStyle() {
       .primaryBtn:hover { transform: translateY(-1px); }
 
       /* nav responsive */
+      .header-bar { height: 74px; }
+      @media (max-width: 900px) { .header-bar { height: 56px; } }
       .mobile-only { display: none; }
       @media (max-width: 900px) {
         .desktop-nav { display: none !important; }
@@ -1877,6 +1957,8 @@ function GlobalStyle() {
       .masonry-item { width: 100%; margin-bottom: 16px; break-inside: avoid; display: block; }
       .masonry-media { position: relative; border-radius: 16px; display: grid; place-items: center;
         overflow: hidden; }
+      .masonry-media.has-img { display: block; }
+      .masonry-media.has-img img { width: 100%; height: auto; display: block; }
       .masonry-overlay { position: absolute; inset: 0; display: flex; flex-direction: column;
         justify-content: flex-end; padding: 18px; opacity: 0; transition: .25s;
         background: linear-gradient(transparent, rgba(11,18,32,.7)); }
